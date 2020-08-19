@@ -27,6 +27,8 @@ export class UserController {
       );
 
       res.status(200).send({ result });
-    } catch (error) {}
+    } catch (error) {
+      res.status(error.errorCode || 400).send({ error: error.message });
+    }
   }
 }

@@ -20,7 +20,7 @@ export class UserBusiness {
     password: string,
     role: string
   ): Promise<string> {
-    if (!name || !email || !nickname || !password || role) {
+    if (!name || !email || !nickname || !password || !role) {
       throw new InvalidParameterError("Invalid Parameters.");
     }
 
