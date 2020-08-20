@@ -23,3 +23,11 @@ export enum UserRole {
   ADMIN = "ADMIN",
   BAND = "BAND",
 }
+
+export interface UserInputDTO {
+  name: string;
+  email: string;
+  password: string;
+  nickname: string;
+  role: string;
+}
