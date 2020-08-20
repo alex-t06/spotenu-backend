@@ -1,5 +1,5 @@
 import { BandInputDTO } from "./../model/Band";
-import { UserInputDTO } from "./../model/User";
+import { UserInputDTO, LoginInputDTO } from "./../model/User";
 import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
 import { UserDatabase } from "../data/UserDatabase";
@@ -75,6 +75,21 @@ export class UserController {
       res.status(200).send({ result });
     } catch (error) {
       res.status(error.errorCode || 400).send({ error: error.message });
+    }
+  }
+
+  async login(req: Request, res: Response) {
+    try {
+      const input: LoginInputDTO = {
+        user: req.body.user,
+        password: req.body.password,
+      };
+
+      const token = await UserController.UserBusiness.login(input);
+
+      res.status(200).send({ token });
+    } catch (error) {
+      res.status(error.errorCode || 400).send({ message: error.message });
     }
   }
 }

@@ -1,4 +1,4 @@
-import { UserRole } from "./../model/User";
+import { UserRole, User } from "./../model/User";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserDatabase extends BaseDatabase {
@@ -16,8 +16,31 @@ export class UserDatabase extends BaseDatabase {
   ): Promise<any> {
     try {
       await this.getConnection()
-        .insert({ id, name, email, password, nickname, role, description, approved })
+        .insert({
+          id,
+          name,
+          email,
+          password,
+          nickname,
+          role,
+          description,
+          approved,
+        })
         .into(UserDatabase.TABLE_NAME);
+    } catch (error) {
+      throw new Error(error.sqlMessage || error.message);
+    }
+  }
+
+  public async getEspecificUser(user: string): Promise<User | undefined> {
+    try {
+      const result = await this.getConnection()
+        .select("*")
+        .from(UserDatabase.TABLE_NAME)
+        .where({ nickname: user })
+        .orWhere({ email: user });
+
+      return User.toUserModel(result[0]);
     } catch (error) {
       throw new Error(error.sqlMessage || error.message);
     }
