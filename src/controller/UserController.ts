@@ -1,4 +1,5 @@
-import { UserInputDTO } from "./../model/UserListener";
+import { BandInputDTO } from "./../model/Band";
+import { UserInputDTO } from "./../model/User";
 import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
 import { UserDatabase } from "../data/UserDatabase";
@@ -24,6 +25,51 @@ export class UserController {
         nickname,
         password,
         role
+      );
+
+      res.status(200).send({ result });
+    } catch (error) {
+      res.status(error.errorCode || 400).send({ error: error.message });
+    }
+  }
+
+  public async signupAdmin(req: Request, res: Response) {
+    try {
+      const { name, email, nickname, password, role }: UserInputDTO = req.body;
+
+      const result = await UserController.UserBusiness.signupAdmin(
+        name,
+        email,
+        nickname,
+        password,
+        role,
+        req.headers.authorization
+      );
+
+      res.status(200).send({ result });
+    } catch (error) {
+      res.status(error.errorCode || 400).send({ error: error.message });
+    }
+  }
+
+  public async signupBand(req: Request, res: Response) {
+    try {
+      const {
+        name,
+        email,
+        nickname,
+        password,
+        role,
+        description,
+      }: BandInputDTO = req.body;
+
+      const result = await UserController.UserBusiness.signupBand(
+        name,
+        email,
+        nickname,
+        password,
+        role,
+        description
       );
 
       res.status(200).send({ result });
