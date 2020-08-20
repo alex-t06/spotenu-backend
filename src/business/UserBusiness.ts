@@ -1,4 +1,6 @@
-import { UserRole } from "./../model/User";
+import { UnauthorizedError } from "./../error/UnauthorizedError";
+import { NotFoundError } from "./../error/NotFoundError";
+import { UserRole, LoginInputDTO } from "./../model/User";
 import { InvalidParameterError } from "./../error/InvalidParameterError";
 import { HashManager } from "../services/HashManager";
 import { Authenticator } from "../services/Authenticator";
@@ -134,9 +136,7 @@ export class UserBusiness {
     }
 
     if (password.length < 6) {
-      throw new InvalidParameterError(
-        "Minimum password length: 6 characters."
-      );
+      throw new InvalidParameterError("Minimum password length: 6 characters.");
     }
 
     const id: string = this.idGenerator.generate();
@@ -158,5 +158,39 @@ export class UserBusiness {
     );
 
     return "Band created!";
+  }
+
+  async login(input: LoginInputDTO): Promise<string> {
+    const { user, password } = input;
+
+    if (!user || !password) {
+      throw new InvalidParameterError("Invalid Parameters.");
+    }
+
+    const userData = await this.userDatabase.getEspecificUser(user);
+
+    if (!userData) {
+      throw new NotFoundError("User not found.");
+    }
+
+    if (userData.getRole() === UserRole.BAND && !userData.getApproved()) {
+      throw new UnauthorizedError("Not approved yet.");
+    }
+
+    const hashCompare = await this.hashManager.compare(
+      password,
+      userData.getPassword()
+    );
+
+    if (!hashCompare) {
+      throw new InvalidParameterError("Invalid password.");
+    }
+
+    const accessToken = this.authenticator.generateToken({
+      id: userData.getId(),
+      role: userData.getRole(),
+    });
+
+    return accessToken;
   }
 }
