@@ -1,21 +1,19 @@
-import { BandDTO } from "./../model/Band";
 import { BaseDatabase } from "./BaseDatabase";
+import { Band } from "../model/Band";
 
 export class BandDatabase extends BaseDatabase {
   protected static TABLE_NAME = "UserSpotenu";
 
-  public async getBands(): Promise<BandDTO[]> {
+  public async getBands(): Promise<Band | undefined> {
     try {
       let result = undefined;
 
       result = await this.getConnection()
-        .select("name", "email", "nickname", "approved")
+        .select('*')
         .from(BandDatabase.TABLE_NAME)
         .where({ role: "BAND" });
 
-      if (result !== undefined) {
-        return result;
-      }
+      return Band.toBandModel(result[0]);
     } catch (error) {
       throw new Error(error.sqlMessage || error.message);
     }
