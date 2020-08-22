@@ -6,6 +6,7 @@ import { UserDatabase } from "../data/UserDatabase";
 import { HashManager } from "../services/HashManager";
 import { Authenticator } from "../services/Authenticator";
 import { IdGenerator } from "../services/IdGenerator";
+import { BaseDatabase } from "../data/BaseDatabase";
 
 export class UserController {
   private static UserBusiness = new UserBusiness(
@@ -30,6 +31,8 @@ export class UserController {
       res.status(200).send({ result });
     } catch (error) {
       res.status(error.errorCode || 400).send({ error: error.message });
+    } finally {
+      await BaseDatabase.destroyConnection();
     }
   }
 
@@ -49,6 +52,8 @@ export class UserController {
       res.status(200).send({ result });
     } catch (error) {
       res.status(error.errorCode || 400).send({ error: error.message });
+    } finally {
+      await BaseDatabase.destroyConnection();
     }
   }
 
@@ -75,6 +80,8 @@ export class UserController {
       res.status(200).send({ result });
     } catch (error) {
       res.status(error.errorCode || 400).send({ error: error.message });
+    } finally {
+      await BaseDatabase.destroyConnection();
     }
   }
 
@@ -90,6 +97,8 @@ export class UserController {
       res.status(200).send({ token });
     } catch (error) {
       res.status(error.errorCode || 400).send({ message: error.message });
+    } finally {
+      await BaseDatabase.destroyConnection();
     }
   }
 }

@@ -24,7 +24,6 @@ export class Band {
 
   public static toBandModel(band: any): Band {
     return new Band(
-      
       band.name,
       band.email,
       band.nickname,

@@ -40,7 +40,11 @@ export class UserDatabase extends BaseDatabase {
         .where({ nickname: user })
         .orWhere({ email: user });
 
-      return User.toUserModel(result[0]);
+      if (result.length > 0) {
+        return User.toUserModel(result[0]);
+      } else {
+        return undefined;
+      }
     } catch (error) {
       throw new Error(error.sqlMessage || error.message);
     }
