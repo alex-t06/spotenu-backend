@@ -160,7 +160,7 @@ export class UserBusiness {
     return "Band created!";
   }
 
-  async login(input: LoginInputDTO): Promise<string> {
+  async login(input: LoginInputDTO): Promise<any> {
     const { user, password } = input;
 
     if (!user || !password) {
@@ -191,6 +191,8 @@ export class UserBusiness {
       role: userData.getRole(),
     });
 
-    return accessToken;
+    const role = userData.getRole();
+
+    return { accessToken, role };
   }
 }

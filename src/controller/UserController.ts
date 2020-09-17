@@ -92,9 +92,9 @@ export class UserController {
         password: req.body.password,
       };
 
-      const token = await UserController.UserBusiness.login(input);
+      const result = await UserController.UserBusiness.login(input);
 
-      res.status(200).send({ token });
+      res.status(200).send({ result });
     } catch (error) {
       res.status(error.errorCode || 400).send({ message: error.message });
     } finally {
